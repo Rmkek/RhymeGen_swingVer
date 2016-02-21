@@ -6,8 +6,6 @@ public class RhymeGeneratorMain {
         RhymeGUI gui = new RhymeGUI();
         gui.go();
         System.out.println("Введите строку, для которой нужно создать рифму\n");
-        String input = gui.field.toString();
-        rgen.rhymeWord(input);
 
 
     }
