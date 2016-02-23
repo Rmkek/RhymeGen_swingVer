@@ -21,12 +21,13 @@ public class RhymeGUI {
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         area.setEditable(false);
+        area.setWrapStyleWord(true);
         area.setLineWrap(true);
         area.setSize(100, 150);
         panel.add(scroller, BorderLayout.NORTH);
         panel.add(field, BorderLayout.CENTER);
         panel.add(button, BorderLayout.SOUTH);
-        field.requestFocusInWindow();
+        field.requestFocus();
         frame.getContentPane().add(panel);
         frame.setSize(250, 200);
         frame.setVisible(true);
