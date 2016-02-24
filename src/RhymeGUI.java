@@ -12,10 +12,9 @@ public class RhymeGUI {
     JTextField field = new JTextField("Введите слово для рифмы...");
     JTextArea area = new JTextArea("Здесь будет выведена рифма", 6, 16);
     JScrollPane scroller = new JScrollPane(area);
-    String input = field.getText();
-
 
     public void go() {
+
 
         button.addActionListener(new buttonListener());
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -33,12 +32,28 @@ public class RhymeGUI {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
-}
+    }
+
+
+
     class buttonListener implements ActionListener{
         public void actionPerformed(ActionEvent event){
             String userInput = field.getText();
             String generatedWord = generator.rhymeWord(userInput, true);
             area.setText(generatedWord);
+
+      /*      try {
+                MaryInterface marytts = new LocalMaryInterface();
+                Set<String> voices = marytts.getAvailableVoices();
+                marytts.setVoice(voices.iterator().next());
+                AudioInputStream audio = marytts.generateAudio(generatedWord);
+                AudioPlayer player = new AudioPlayer(audio);
+                player.start();
+                player.join();
+            } catch(Exception ex){
+                ex.printStackTrace();
+                area.setText("Failed to set-up marytts!");
+            } */
         }
     }
 
