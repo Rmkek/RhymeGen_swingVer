@@ -30,6 +30,10 @@ public class RhymeGenerator {
 
             if (input.charAt(i) != ' ') {
                 inputWords.add(input.charAt(i));
+                if (firstCharIsAVowel) {
+                    i++;
+                    firstCharIsAVowel = false;
+                }
             } else {
                 for (int z = 0; z < inputWords.size() / 2; z++) {
                     int myRandom = (int) (Math.random() * 34);
@@ -63,5 +67,16 @@ public class RhymeGenerator {
         String returning = output.toString();
         output.delete(0, output.length());
         return returning;
+    }
+
+
+    String RhymeWordDB(String input) throws java.lang.ClassNotFoundException, java.sql.SQLException {
+        conn DBCONNECTION = new conn();
+        try {
+            conn.Conn();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return DBCONNECTION.ReadDB(input);
     }
 }
