@@ -1,16 +1,15 @@
 import java.io.*;
 
-public class RhymeGeneratorMain {
-    public static void main(String[] args) {
-        RhymeGUI gui = new RhymeGUI();
-        gui.go();
-        System.out.println(1 / 2);
+public class RhymeGeneratorMain { //создаем класс рифмогенератор
+    public static void main(String[] args) { //точка входа приложения
+        RhymeGUI gui = new RhymeGUI(); //создаем класс пользовательского интерфейса
+        gui.go(); //запускаем интерфейс
     }
 
 
-    static File file;
+    static File file; //создаем файл
 
-    public static void write(String filename, String text) {
+    public static void write(String filename, String text) { //функция дли записи в файл
         file = new File(filename);
 
         try {
@@ -35,14 +34,14 @@ public class RhymeGeneratorMain {
         }
     }
 
-    private static void exists(String fileName) throws FileNotFoundException {
-        File file = new File(fileName);
+    private static void exists(String fileName) throws FileNotFoundException { //функция для проверки на существование файла
+        File file = new File(fileName); //пытаемся создать файл, если не удается - выкидываем исключение
         if (!file.exists()) {
             throw new FileNotFoundException(file.getName());
         }
     }
 
-    public static String read(String fileName) throws FileNotFoundException {
+    public static String read(String fileName) throws FileNotFoundException { //функция для чтения файла
         //Этот спец. объект для построения строки
         StringBuilder sb = new StringBuilder();
         file = new File(fileName);
@@ -70,8 +69,8 @@ public class RhymeGeneratorMain {
         return sb.toString();
     }
 
-    public static void update(String nameFile, String newText) throws FileNotFoundException {
-        exists(nameFile);
+    public static void update(String nameFile, String newText) throws FileNotFoundException { //функция для обновления файла
+        exists(nameFile); //если существует файл -- записываем в него новый текст
         StringBuilder sb = new StringBuilder();
         String oldFile = read(nameFile);
         sb.append(oldFile);
