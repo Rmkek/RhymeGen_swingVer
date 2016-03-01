@@ -1,6 +1,21 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RhymeGenerator {
+
+    public static final char[] consonants =
+            {
+                    //б, в, г, д, ж, з, й, к, л, м, н, п, р, с, т, ф, х, ц, ч, ш, щ
+                    'б', 'в', 'г', 'д', 'ж', 'з', 'й', 'к', 'л', 'м', 'н', 'п', 'р', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ'
+            };
+    public static final char[] vowels =
+            {
+                    'а', 'у', 'о', 'ы', 'и', 'э', 'я', 'ю', 'ё', 'е'
+            };
+
+    private static final Random random = new Random();
+
+
     String myWords[] = {
             "на", "ну", "но", "ны", "ни", "ма", "му", "мо", "мы", "ми",
             "та", "ту", "то", "ты", "ти", "ка", "ку", "ко", "ки", "ке",
@@ -8,8 +23,63 @@ public class RhymeGenerator {
             "ву", "во", "вы", "ви"}; //35 различных слогов
 
     public ArrayList<Character> inputWords = new ArrayList<Character>(100); //слова, введенные пользователем
-
+    StringBuilder word = new StringBuilder();
     StringBuffer output = new StringBuffer(100); //вывод
+
+    public String generateWord(String ending) {
+        try {
+
+            for (int i = 0; i < ending.length() - 1; i++) {
+                if (random.nextBoolean()) {
+                    word.append(pullConsonant());
+                } else {
+                    word.append(pullVowel());
+                }
+            }
+            ending = ending.substring(ending.length() - 3, ending.length());
+            StringBuilder output = new StringBuilder(word + ending);
+            word.delete(0, word.length() - 1);
+            return output.toString();
+        } catch (java.lang.StringIndexOutOfBoundsException ex) {
+            try {
+                ending = ending.substring(ending.length() - 2, ending.length());
+                return word + ending;
+            } catch (java.lang.StringIndexOutOfBoundsException ex2) {
+                try {
+                    ending = ending.substring(ending.length() - 1, ending.length());
+                    return word + ending;
+                } catch (java.lang.StringIndexOutOfBoundsException ex3) {
+                    return "Слишком маленькое слово (ошибка создана в генерации побуквенно)";
+                }
+            }
+        }
+    }
+
+
+    public static char pullVowel() {
+        return vowels[random.nextInt(vowels.length)];
+    }
+
+    public static char pullConsonant() {
+        return consonants[random.nextInt(consonants.length)];
+    }
+
+
+    String rhymeWordDany(String input) {
+        StringBuilder outputx5 = new StringBuilder();
+        outputx5.append("----ПОБУКВЕННО----\n");
+        outputx5.append(generateWord(input));
+        outputx5.append("\n");
+        outputx5.append(generateWord(input));
+        outputx5.append("\n");
+        outputx5.append(generateWord(input));
+        outputx5.append("\n");
+        outputx5.append(generateWord(input));
+        outputx5.append("\n");
+        outputx5.append(generateWord(input));
+        outputx5.append("\n");
+        return (outputx5.toString());
+    }
 
 
     String rhymeWord(String input, boolean flag) { //функция для генерации
@@ -66,12 +136,14 @@ public class RhymeGenerator {
             output.append(input.charAt(input.length() - 2)); //генерируем рифму
             output.append(input.charAt(input.length() - 1)); //генерируем
         }
+        //output.insert(0, "----ПО СЛОГАМ----\n");
         String returning = output.toString(); //переводим в строку
         output.delete(0, output.length()); //очищаем вывод
         return returning; //выводим строку
     }
 
 
+    /* Генерация из базы данных */
     String RhymeWordDB(String input) throws java.lang.ClassNotFoundException, java.sql.SQLException { //генерация рифмы с БД
         conn DBCONNECTION = new conn(); //соединяемся
         try {
@@ -80,7 +152,7 @@ public class RhymeGenerator {
             ex.printStackTrace();
         }
         String output = DBCONNECTION.ReadDB(input);
-        //DBCONNECTION.CloseDB(); TODO: проверить, есть ли смысл закрывать БД
+        //DBCONNECTION.CloseDB();
         return output; //возвращаем что прочли из БД
     }
 }

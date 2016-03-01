@@ -16,19 +16,29 @@ public class RhymeGUI { //класс для генерации гуи(основ
     JTextArea area = new JTextArea("Здесь будет выведена рифма", 6, 16); //поле вывода
     JScrollPane scroller = new JScrollPane(area); //добавляем прокрутку на поле вывода
     JMenuBar menuBar = new JMenuBar(); //меню
-    JMenu menu = new JMenu("Меню"); //подменю
     JMenu fileMenu = new JMenu("Файл"); //подменю файл
     JMenuItem closeMenu = new JMenuItem("Закрыть"); //подменю закрыть
     JMenuItem clearMenu = new JMenuItem("Очистить"); //подменю очистить
     JMenuItem saveFileItem = new JMenuItem("Сохранить..."); //подменю сохранить
+    JMenuItem amountOfWords = new JMenuItem("Количество слов...");
+    JMenu rhymeTypeMenu = new JMenu("Настройки");
+    public JCheckBoxMenuItem rhymeWordsRMK = new JCheckBoxMenuItem("Рифма по слогам");
+    public JCheckBoxMenuItem rhymeWordsDany = new JCheckBoxMenuItem("Рифма по буквам");
+    public JCheckBoxMenuItem rhymeWordsDB = new JCheckBoxMenuItem("Рифма по БД");
     File file = new File("/home/rmk/Rhymes.txt"); //место создания файла(линукс)
 
     public void go() { //создаем гуи
+        rhymeTypeMenu.add(rhymeWordsDany);
+        rhymeTypeMenu.add(rhymeWordsRMK);
+        rhymeTypeMenu.add(rhymeWordsDB);
+        //rhymeTypeMenu.addSeparator();
+        //rhymeTypeMenu.add(amountOfWords); TODO: Добавить сколько выводить слов, пофиксить вывод слов в JTEXTAREA
         fileMenu.add(saveFileItem); //добавляем в меню
         fileMenu.add(clearMenu); //компоненты
-        menu.add(fileMenu); //отрисовка меню
-        menu.add(closeMenu); //отрисовка
-        menuBar.add(menu);// меню
+        fileMenu.addSeparator();
+        fileMenu.add(closeMenu);
+        menuBar.add(fileMenu);
+        menuBar.add(rhymeTypeMenu);
         closeMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,10 +75,47 @@ public class RhymeGUI { //класс для генерации гуи(основ
     class buttonListener implements ActionListener { //слушатель кнопки
         String userInput;
         String generatedWord;
-
+        Boolean correct = true;
         public void actionPerformed(ActionEvent event) { //по нажатию кнопки
+            userInput = field.getText().toString();
+
+            //working? -- "^[\\s\\s]*$"
+            if (userInput.matches("^[\\s]{2}$")) {
+                System.out.println("Два и более пробела подряд!");
+                correct = false;
+                JOptionPane.showMessageDialog(frame, "Некорректный ввод: два и более пробелов подряд");
+            }
+
+            if (!userInput.matches("^\\D*$")) {
+                System.out.println("Ввод пользователя содержит числа!!!");
+                correct = false;
+                JOptionPane.showMessageDialog(frame, "Некорректный ввод: числа");
+            }
             try {
-                area.setText(generator.RhymeWordDB(field.getText())); //устанавливаем текст на сгенерированный из БД
+                if (rhymeWordsDany.isSelected() && correct) {
+                    area.setText(generator.rhymeWordDany(field.getText()));
+                }
+                if (rhymeWordsDB.isSelected() && correct) {
+                    area.setText(generator.RhymeWordDB(field.getText())); //устанавливаем текст на сгенерированный из БД
+                }
+                if (rhymeWordsRMK.isSelected() && correct) {
+                    try {
+                        userInput = field.getText();
+                        generatedWord = generator.rhymeWord(userInput, true);
+                        area.setText("----ПО СЛОГАМ----\n");
+                        area.append(generatedWord + "\n");
+                        area.append(generator.rhymeWord(userInput, true) + "\n");
+                        area.append(generator.rhymeWord(userInput, true) + "\n");
+                        area.append(generator.rhymeWord(userInput, true) + "\n");
+                        area.append(generator.rhymeWord(userInput, true) + "\n");
+
+                    } catch (java.lang.StringIndexOutOfBoundsException ex) {
+                        area.setText("Введено слишком маленькое слово! (Ошибка была создана генераторе слогов)");
+                        ex.printStackTrace();
+                    }
+                }
+
+
             } catch (java.lang.ClassNotFoundException ClassNotFound) {//отлавливаем ошибку
                 area.setText("ClassNotFoundException"); //выводим пользователю
                 ClassNotFound.printStackTrace(); //выводим в консоль
@@ -79,17 +126,7 @@ public class RhymeGUI { //класс для генерации гуи(основ
 
             //код ниже это сохранненый мною код для дальнейшей доработки(генерация рифмы + чтение вслух)
 
-            /*if(area.getText().equals("Здесь будет выведена рифма") || area.getText().equals("Введено слишком маленькое слово!")){
-                area.setText(null);
-            }
-            try {
-                userInput = field.getText();
-                generatedWord = generator.rhymeWord(userInput, true);
-                area.append(generatedWord + "\n");
-            } catch (java.lang.StringIndexOutOfBoundsException ex){
-                    area.setText("Введено слишком маленькое слово!");
-                    ex.printStackTrace();
-            } /*
+
 
             /*try {
                 MaryInterface marytts = new LocalMaryInterface();
